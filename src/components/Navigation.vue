@@ -8,14 +8,16 @@ const route = useRoute()
 const selectedKeys = computed(() => {
     return [route.path]
 })
+
+function jumpTo ({ key }: { key: any }) {
+    router.push(key)
+}
 </script>
 
 <template>
   <AMenu
     v-model:selectedKeys="selectedKeys"
-    @click="({ key }) => {
-      router.push(key)
-    }"
+    @click="jumpTo"
   >
     <AMenuItem key="/wave-function">
       wave-function

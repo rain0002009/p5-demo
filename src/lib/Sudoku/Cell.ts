@@ -1,28 +1,44 @@
 import type P5 from 'p5'
-import { difference, range } from 'lodash-es'
+import { difference, isNil, range } from 'lodash-es'
 import { EDGES } from '../types'
 
-const selectColor = '#7dd3fc'
+export function findRelativeGrid (current: Cell, arr: Cell[]) {
+    const out: Cell[] = []
+    arr.forEach((cell) => {
+        if (current.index === cell.index)
+            return null
+        if (current.row === cell.row) {
+            out.push(cell)
+            return null
+        }
+        if (current.col === cell.col) {
+            out.push(cell)
+            return null
+        }
+        if (current.areaIndex === cell.areaIndex) {
+            out.push(cell)
+            return null
+        }
+    })
+    return out
+}
 
 export class Cell {
     private num?: number
     public readonly row: number
     public readonly col: number
     static size = 100
-    private isSelected: boolean
     private readonly x: number
     private readonly y: number
     private edge: [boolean, boolean, boolean, boolean]
     public index: number
     public areaIndex: number
-    private isSelectedInRange: boolean
+    private backgroundColor?: P5.Color
 
     constructor (row: number, col: number, num?: number) {
         this.num = num
         this.row = row
         this.col = col
-        this.isSelected = false
-        this.isSelectedInRange = false
         this.x = this.col * Cell.size
         this.y = this.row * Cell.size
         this.edge = [this.row % 3 === 0, this.col === 8, this.row === 8, this.col % 3 === 0]
@@ -34,16 +50,15 @@ export class Cell {
         return this.num
     }
 
+    setBackground (color?: P5.Color, alpha?: number) {
+        this.backgroundColor = color
+        if (!isNil(alpha) && this.backgroundColor) {
+            this.backgroundColor.setAlpha(alpha)
+        }
+    }
+
     setNum (num: number | undefined) {
         this.num = num
-    }
-
-    setSelected (status: boolean) {
-        this.isSelected = status
-    }
-
-    setIsSelectedInRange (status: boolean) {
-        this.isSelectedInRange = status
     }
 
     isInSide (sk: P5) {
@@ -53,16 +68,13 @@ export class Cell {
     }
 
     check (arr: Cell[]) {
-        return difference(range(1, 10), arr.map(cell => cell.isDone))
+        return difference(range(1, 10), findRelativeGrid(this, arr).map(cell => cell.isDone)).filter(Boolean)
     }
 
     draw (sk: P5) {
         sk.cursor(sk.HAND)
-        if (this.isSelected || this.isSelectedInRange) {
-            const color = sk.color(selectColor)
-            if (this.isSelectedInRange)
-                color.setAlpha(120)
-            sk.fill(color)
+        if (this.backgroundColor) {
+            sk.fill(this.backgroundColor)
             sk.noStroke()
             sk.rect(this.x + 1, this.y + 1, Cell.size - 1, Cell.size - 1)
         } else {

@@ -1,51 +1,37 @@
 import type P5 from 'p5'
-import { Cell } from './Cell'
+import { Cell, findRelativeGrid } from './Cell'
+
+const selectColor = '#7dd3fc'
 
 export function drawSudoku (sk: P5) {
     const grids: Cell[] = []
     let selectedCell: Cell | undefined
     let isStart = false
 
-    function checkNext (index: number, arr: Cell[]) {
-        if (arr.length === 0) {
-            isStart = false
-            return true
-        }
-        const nextCell = arr[index]
-        if (!nextCell)
-            return true
-        for (let i = 0; i <= 9; i++) {
-            if (nextCell.check(findRelativeGrid(nextCell)).includes(i)) {
-                nextCell.setNum(i)
-                if (checkNext(index + 1, arr)) {
-                    return true
-                } else {
-                    nextCell.setNum(undefined)
+    /**
+     * 回溯
+     */
+    function backTracking () {
+        for (let index = 0; index < grids.length; index++) {
+            const current = grids[index]
+            if (current.isDone) {
+                current.draw(sk)
+                continue
+            }
+            for (let val = 1; val <= 9; val++) {
+                if (current.check(grids).includes(val)) {
+                    current.setNum(val)
+                    current.setBackground(sk.color('#6ee7b7'))
+                    if (backTracking()) {
+                        return true
+                    }
+                    current.setNum(undefined)
+                    current.setBackground(undefined)
                 }
             }
+            return false
         }
         return true
-    }
-
-    function findRelativeGrid (current: Cell) {
-        const out: Cell[] = []
-        grids.forEach((cell) => {
-            if (current.index === cell.index)
-                return null
-            if (current.row === cell.row) {
-                out.push(cell)
-                return null
-            }
-            if (current.col === cell.col) {
-                out.push(cell)
-                return null
-            }
-            if (current.areaIndex === cell.areaIndex) {
-                out.push(cell)
-                return null
-            }
-        })
-        return out
     }
 
     sk.setup = () => {
@@ -64,8 +50,9 @@ export function drawSudoku (sk: P5) {
             cell.draw(sk)
         })
         if (isStart) {
-            const arr = grids.filter(cell => !cell.isDone)
-            checkNext(0, arr)
+            backTracking()
+            if (grids.filter(cell => cell.isDone).length === 0)
+                isStart = false
         }
     }
 
@@ -74,16 +61,15 @@ export function drawSudoku (sk: P5) {
      */
     sk.mouseClicked = () => {
         grids.forEach((cell) => {
-            cell.setSelected(false)
-            cell.setIsSelectedInRange(false)
+            cell.setBackground(undefined)
             selectedCell = void 0
         })
         grids.forEach((cell) => {
             if (cell.isInSide(sk)) {
-                cell.setSelected(true)
+                cell.setBackground(sk.color(selectColor))
                 selectedCell = cell
-                findRelativeGrid(cell).forEach((cell) => {
-                    cell.setIsSelectedInRange(true)
+                findRelativeGrid(cell, grids).forEach((cell) => {
+                    cell.setBackground(sk.color(selectColor), 120)
                 })
             }
         })
@@ -106,6 +92,9 @@ export function drawSudoku (sk: P5) {
     return {
         handleStart () {
             isStart = true
+            grids.forEach((cell) => {
+                cell.setBackground(undefined)
+            })
         },
         handleReset () {
             isStart = false

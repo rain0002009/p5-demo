@@ -33,6 +33,8 @@ const { el } = useP5((sk) => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<route lang="yaml">
+meta:
+  nav:
+    index: 0
+</route>

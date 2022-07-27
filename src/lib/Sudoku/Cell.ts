@@ -34,6 +34,7 @@ export class Cell {
     public index: number
     public areaIndex: number
     private backgroundColor?: P5.Color
+    private timeout: number
 
     constructor (row: number, col: number, num?: number) {
         this.num = num
@@ -44,6 +45,7 @@ export class Cell {
         this.edge = [this.row % 3 === 0, this.col === 8, this.row === 8, this.col % 3 === 0]
         this.index = this.col + this.row * 9
         this.areaIndex = (this.col / 3 >> 0) + (this.row / 3 >> 0) * 3 + 1
+        this.timeout = 0
     }
 
     get isDone () {
@@ -71,9 +73,18 @@ export class Cell {
         return difference(range(1, 10), findRelativeGrid(this, arr).map(cell => cell.isDone)).filter(Boolean)
     }
 
+    play (num?: number, background?: P5.Color, timeout?: number) {
+        this.timeout = timeout || 0
+        this.setNum(num)
+        this.setBackground(background)
+    }
+
     draw (sk: P5) {
+        if (this.timeout !== 0) {
+            this.timeout--
+        }
         sk.cursor(sk.HAND)
-        if (this.backgroundColor) {
+        if (this.backgroundColor && !this.timeout) {
             sk.fill(this.backgroundColor)
             sk.noStroke()
             sk.rect(this.x + 1, this.y + 1, Cell.size - 1, Cell.size - 1)
@@ -96,7 +107,7 @@ export class Cell {
             if ((index === EDGES.left) && hasEdge)
                 sk.line(x1, y1, x1, y2)
         })
-        if (this.num) {
+        if (this.num && !this.timeout) {
             sk.noStroke()
             sk.fill(this.num ? '#000' : '#f43f5e')
             sk.textSize(30)

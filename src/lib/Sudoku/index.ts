@@ -14,19 +14,15 @@ export function drawSudoku (sk: P5) {
     function backTracking () {
         for (let index = 0; index < grids.length; index++) {
             const current = grids[index]
-            if (current.isDone) {
-                current.draw(sk)
+            if (current.isDone)
                 continue
-            }
             for (let val = 1; val <= 9; val++) {
                 if (current.check(grids).includes(val)) {
-                    current.setNum(val)
-                    current.setBackground(sk.color('#6ee7b7'))
+                    current.play(val, sk.color('#6ee7b7'), index)
                     if (backTracking()) {
                         return true
                     }
-                    current.setNum(undefined)
-                    current.setBackground(undefined)
+                    current.play()
                 }
             }
             return false

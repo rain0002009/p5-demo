@@ -14,6 +14,12 @@ const menuItems = computed(() => {
         .sort((a, b) => {
             return (a.meta?.nav?.index || 0) - (b.meta?.nav?.index || 0)
         })
+        .map((item) => {
+            return {
+                ...item,
+                name: item.name as string,
+            }
+        })
 })
 
 const selectedKeys = computed(() => {

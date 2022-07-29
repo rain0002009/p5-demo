@@ -4,6 +4,7 @@ specifiers:
   '@antfu/eslint-config': ^0.25.2
   '@types/lodash-es': ^4.17.6
   '@types/p5': ^1.4.2
+  '@unocss/reset': ^0.44.7
   '@vitejs/plugin-vue': ^3.0.0
   '@vueuse/head': ^0.7.7
   ant-design-vue: ^3.2.10
@@ -25,6 +26,7 @@ specifiers:
   vue-tsc: ^0.38.4
 
 dependencies:
+  '@unocss/reset': 0.44.7
   '@vueuse/head': 0.7.7_vue@3.2.37
   ant-design-vue: 3.2.10_vue@3.2.37
   lodash-es: 4.17.21
@@ -627,7 +629,6 @@ packages:
 
   /@unocss/reset/0.44.7:
     resolution: {integrity: sha512-izmqZafDMClT1vQEGpPzfKWvyft8xkA33xC0r0iOWEiDd94+wlC+7ohSnsafyl0iwEuwPp/ONzDft5ouHrOWLA==}
-    dev: true
 
   /@unocss/scope/0.44.7:
     resolution: {integrity: sha512-E6kqHWfJpm3TXHj9KWs23oVEzknVAUfqbDpGYxh9JYG+hIvbYQdrBpIXNspodxQllNeQtGrtkQ8/PrHDo/3hpw==}

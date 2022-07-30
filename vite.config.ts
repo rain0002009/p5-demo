@@ -16,6 +16,11 @@ export default defineConfig({
             },
         },
     },
+    server: {
+        hmr: {
+            path: 'hmr',
+        },
+    },
     plugins: [
         vue(),
         Unocss(),

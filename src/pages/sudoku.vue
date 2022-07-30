@@ -1,8 +1,12 @@
 <script lang="ts" setup>
+import { useHead } from '@vueuse/head'
 import { useP5 } from '../lib/useP5'
 import { drawSudoku } from '../lib/Sudoku'
 
 const { el, callbackValue } = useP5(drawSudoku)
+useHead({
+    title: 'sudoku',
+})
 </script>
 
 <template>

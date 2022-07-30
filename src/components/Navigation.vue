@@ -2,6 +2,7 @@
 import { useRoute, useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { useMainStore } from '../store'
+import { vRotate } from '../lib/directive/vRotate'
 
 const router = useRouter()
 const route = useRoute()
@@ -34,9 +35,15 @@ function jumpTo ({ key }: { key: any }) {
 <template>
   <AMenu
     v-model:selectedKeys="selectedKeys"
+    v-rotate.parent="'li'"
+    class="bg-transparent pt-40px space-y-30px"
     @click="jumpTo"
   >
-    <AMenuItem v-for="item in menuItems" :key="`/${item.name}`">
+    <AMenuItem
+      v-for="item in menuItems"
+      :key="`/${item.name}`"
+      class="bg-white m-4 rounded-4px"
+    >
       {{ item.name }}
     </AMenuItem>
   </AMenu>

@@ -1,8 +1,12 @@
 <script lang="ts" setup>
 import { unref } from 'vue'
+import { useHead } from '@vueuse/head'
 import { useP5 } from '../lib/useP5'
 import { drawWithWaveFunctionCollapse } from '../lib/WaveFunctionCollapse'
 
+useHead({
+    title: 'wave-function',
+})
 const imageUrls = new Array(13).fill(0).map((_i, index) => {
     return new URL(`../assets/circuit-coding-train/${index}.png`, import.meta.url).href
 })

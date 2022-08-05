@@ -1,5 +1,5 @@
 import type P5 from 'p5'
-import { onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 export function useP5<T extends (sk: P5) => any> (start: T) {
     const el = ref<HTMLElement>()
@@ -11,6 +11,12 @@ export function useP5<T extends (sk: P5) => any> (start: T) {
             sk.value = sketch
             callbackValue.value = start?.(sketch)
         }, el.value)
+    })
+    onBeforeUnmount(() => {
+        if (sk.value) {
+            sk.value?.remove()
+            sk.value = void 0
+        }
     })
     return {
         sk,
